@@ -1,0 +1,28 @@
+// @import "~bootstrap/scss/functions";
+// @import "./helpers/_variables";//客製Bootstrap
+// @import "~bootstrap/scss/bootstrap";
+
+// @import "./_dashboard";//dashboard
+
+@import "./helpers/reset.scss"; // Css For reset
+
+*,
+*::before,
+*::after{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+    padding: 0;
+    margin: 0;
+    font-size: 62.5%;
+    font-family: Microsoft JhengHei, sans-serif;
+}
+
+
+.clearfix{
+    clear: both;
+}

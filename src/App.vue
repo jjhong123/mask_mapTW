@@ -1,28 +1,53 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <SideMenu :msk_data="mask_zHTw" />
+    <OpLayers v-if="mask_zHTw !== null" :msk_data="mask_zHTw" />
+    <CardDetail/>
+    <div class="clearfix"></div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import SideMenu from "./components/SideMenu";
+import OpLayers from "./components/OpLayers";
+import CardDetail from "./components/CardDetail";
+import axios from "axios";
 export default {
-  name: 'App',
+  name: "App",
+  data() {
+    return {
+      mask_zHTw: null,
+    };
+  },
   components: {
-    HelloWorld
-  }
-}
+    SideMenu,
+    OpLayers,
+    CardDetail
+  },
+  created() {
+    const vm = this;
+    vm.getMaskData();
+  },
+  methods: {
+    async getMaskData() {
+      const vm = this;
+      // const response = await axios.get(
+      //   "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
+      // );
+      // 假資料
+      const response = await axios.get("http://localhost:3000/data");
+      vm.mask_zHTw = await Object.freeze(response.data.features); //凍結對象,禁止對於屬性做修改
+    },
+  },
+};
 </script>
 
+
 <style lang="scss">
+@import "./assets/main.scss";
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  width: 100%;
+  height: 100%;
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
   <div class="show_details">
     <div class="card">
-      <div class="title">洪瑞則藥局</div>
-      <div class="address">地址：桃園市平鎮區廣明路65巷2號4樓</div>
-      <div class="phone">電話：0912093638</div>
+      <div class="title">XX藥局</div>
+      <div class="address">地址：DDDDDDDDDDDDDDD</div>
+      <div class="phone">電話：DDDDDDDD</div>
       <div class="mask-num">
         <div class="adult">
           <div>成人口罩</div>

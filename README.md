@@ -1,4 +1,4 @@
-# 口罩地圖(Vue.js)mask-maptw
+# 口罩地圖(Vue.js) For Taiwan
 
 ## Project setup
 ```

@@ -1,5 +1,6 @@
 <template>
   <div id="menu">
+    <CardDetail />
     <div class="nav">
       <div class="nav-header" style="margin-bottom:10px;">
         {{today.year}}.{{today.month}}.{{today.day}}
@@ -52,7 +53,7 @@
     </div>
     <div class="menu-cards">
       <ul class="cards-list">
-        <Card v-for="(item,index) in ft_data" :key="index" :data="item" />
+        <Card v-for="(item,index) in ft_data" :key="index" :data="item" @click.native="printDetailsClick(item)"/>
       </ul>
     </div>
   </div>
@@ -62,10 +63,13 @@
 import data_zHTw from "@/data_zHTw.js";
 import Card from "./Card";
 import axios from "axios";
+import CardDetail from "./CardDetail";
+
 export default {
   props: ["msk_data"],
   components: {
     Card,
+    CardDetail,
   },
   data() {
     return {
@@ -87,7 +91,7 @@ export default {
     const vm = this;
     vm.day = new Date();
     vm.today.year = vm.day.getFullYear();
-    vm.today.month = vm.day.getMonth()+1;
+    vm.today.month = vm.day.getMonth() + 1;
     vm.today.day = vm.day.getDate();
     vm.today.week = vm.day.getDay();
     vm.day = vm.day % 2 !== 0 ? (vm.day = false) : (vm.day = true);
@@ -156,8 +160,12 @@ export default {
         }
         return false;
       });
-      console.log(vm.ft_data);
     },
+    // 左面板->list_click
+    printDetailsClick(data) {
+      this.$bus.$emit("carddetail:message",data);
+      this.$emit("update-show",true,data);
+    }
   },
 };
 </script>

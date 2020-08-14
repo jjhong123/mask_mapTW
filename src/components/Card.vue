@@ -1,5 +1,5 @@
 <template>
-  <li class="item">
+  <li class="item" >
     <div>
       {{data.properties.name}}
       <div class="clearfix"></div>
@@ -57,7 +57,7 @@ export default {
       font-size: 1.6rem;
       display: flex;
       justify-content: space-between;
-      
+
       .mk-ad {
         width: 49%;
         background: #88b5dd;

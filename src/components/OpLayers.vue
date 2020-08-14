@@ -13,7 +13,6 @@
 </template>
 
 <script>
-import CardDetail from './CardDetail';
 // 載入 vue2-leaflet，依照自己需要載入組件
 import { LMap, LTileLayer, LGeoJson } from "vue2-leaflet";
 // 載入 css
@@ -35,14 +34,13 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import Vue2LeafletMarkerCluster from "vue2-leaflet-markercluster";
 
 export default {
-  props: ["msk_data"],
+  props: ["msk_data", "flyshow", "tmpdata"],
   name: "App",
   components: {
     LMap,
     LTileLayer,
     "l-geo-json": LGeoJson,
     "v-marker-cluster": Vue2LeafletMarkerCluster,
-    CardDetail
   },
   data() {
     return {
@@ -91,7 +89,7 @@ export default {
 
           return L.marker(latlng, options).on("click", this.markerCilckHandler);
         },
-      }
+      },
     };
   },
   mounted() {
@@ -109,7 +107,18 @@ export default {
   },
   methods: {
     markerCilckHandler(e) {
-      console.log(e);
+      this.$bus.$emit("carddetail:message", e.target.feature);
+    },
+    flyTo(location, done) {},
+  },
+  watch: {
+    tmpdata(item) {
+      console.log(item);
+      const map = this.$refs.myMap.mapObject;
+      map.flyTo(
+        [item.geometry.coordinates[1], item.geometry.coordinates[0]],
+        17
+      );
     },
   },
 };

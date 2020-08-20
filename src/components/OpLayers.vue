@@ -1,20 +1,33 @@
 <template>
   <div id="map">
     <!-- 初始化地圖設定 -->
-    <l-map ref="myMap" :zoom="zoom" :center="center" :options="options" style="height: 100vh;">
+    <l-map
+      ref="myMap"
+      :zoom="zoom"
+      :center="center"
+      :options="options"
+      style="height: 100vh;"
+    >
       <!-- 載入圖資 -->
       <l-tile-layer :url="url" :attribution="attribution" />
       <!-- 加入組件 tag -->
       <v-marker-cluster>
         <l-geo-json :geojson="msk_data" :options="geoJsonOption"></l-geo-json>
       </v-marker-cluster>
+      <l-control-zoom position="topright"></l-control-zoom>
     </l-map>
   </div>
 </template>
 
 <script>
 // 載入 vue2-leaflet，依照自己需要載入組件
-import { LMap, LTileLayer, LGeoJson } from "vue2-leaflet";
+import {
+  LMap,
+  LTileLayer,
+  LGeoJson,
+  LControl,
+  LControlZoom,
+} from "vue2-leaflet";
 // 載入 css
 import "leaflet/dist/leaflet.css";
 
@@ -34,11 +47,13 @@ import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 import Vue2LeafletMarkerCluster from "vue2-leaflet-markercluster";
 
 export default {
-  props: ["msk_data", "flyshow", "tmpdata"],
+  props: ["msk_data", "tmpdata"],
   name: "App",
   components: {
     LMap,
     LTileLayer,
+    LControl,
+    LControlZoom,
     "l-geo-json": LGeoJson,
     "v-marker-cluster": Vue2LeafletMarkerCluster,
   },
@@ -100,20 +115,19 @@ export default {
         const p = position.coords;
         // 將中心點設為目前的位置
         this.center = [p.latitude, p.longitude];
-        // 將目前的位置的標記點彈跳視窗打開
-        // this.$refs.location.mapObject.openPopup();
       });
     });
   },
   methods: {
+    clickHandler() {
+      window.alert("and mischievous");
+    },
     markerCilckHandler(e) {
       this.$bus.$emit("carddetail:message", e.target.feature);
-    },
-    flyTo(location, done) {},
+    }
   },
   watch: {
     tmpdata(item) {
-      console.log(item);
       const map = this.$refs.myMap.mapObject;
       map.flyTo(
         [item.geometry.coordinates[1], item.geometry.coordinates[0]],
@@ -126,9 +140,10 @@ export default {
 
 <style lang="scss">
 #map {
-  width: calc(100% - 400px);
+  width: 100%;
   height: 100vh;
-  float: left;
+  // @media (max-width:767px){
+  // }
 }
 
 .my_points {

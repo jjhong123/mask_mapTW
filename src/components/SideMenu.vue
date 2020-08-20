@@ -1,6 +1,22 @@
 <template>
-  <div id="menu">
-    <CardDetail />
+  <div class="menu" ref="menu">
+    <button type="button" class="button" @click="changMenu()">
+      <svg
+        width="1em"
+        height="1em"
+        viewBox="0 0 16 16"
+        class="bi bi-bar-chart-steps"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path fill-rule="evenodd" d="M.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 .5 0z" />
+        <rect width="5" height="2" x="2" y="1" rx=".5" />
+        <rect width="8" height="2" x="4" y="5" rx=".5" />
+        <path
+          d="M6 9.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5v-1zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"
+        />
+      </svg>
+    </button>
     <div class="nav">
       <div class="nav-header" style="margin-bottom:10px;">
         {{today.year}}.{{today.month}}.{{today.day}}
@@ -53,7 +69,12 @@
     </div>
     <div class="menu-cards">
       <ul class="cards-list">
-        <Card v-for="(item,index) in ft_data" :key="index" :data="item" @click.native="printDetailsClick(item)"/>
+        <Card
+          v-for="(item,index) in ft_data"
+          :key="index"
+          :data="item"
+          @click.native="printDetailsClick(item)"
+        />
       </ul>
     </div>
   </div>
@@ -63,13 +84,11 @@
 import data_zHTw from "@/data_zHTw.js";
 import Card from "./Card";
 import axios from "axios";
-import CardDetail from "./CardDetail";
 
 export default {
   props: ["msk_data"],
   components: {
     Card,
-    CardDetail,
   },
   data() {
     return {
@@ -163,19 +182,62 @@ export default {
     },
     // 左面板->list_click
     printDetailsClick(data) {
-      this.$bus.$emit("carddetail:message",data);
-      this.$emit("update-show",true,data);
-    }
+      this.$bus.$emit("carddetail:message", data);
+      this.$emit("update-show", true, data);
+    },
+    // 縮小面板
+    changMenu() {
+      const vm = this;
+      this.$refs.menu.classList.toggle("menu-avtive");
+      // if (result) {
+      //   this.$refs.menu.toggle("test");
+      // } else {
+      //   this.$refs.menu.toggle("test");
+      // }
+    },
   },
 };
 </script>
 
 <style lang="scss">
-#menu {
-  width: 400px;
+.menu {
   height: 100vh;
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
   color: white;
+  z-index: 9999;
+  width: 375px;
+  transition: all .6s;
+  &-avtive {
+    transform: translateX(-375px);
+    .button {
+      transform: translateX(52px);
+      svg {
+        transform: rotate(90deg);
+      }
+    }
+  }
+  .button {
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: white;
+    border: 1px solid transparent;
+    padding: 10px 15px;
+    font-size: 2rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    svg {
+      transition: 0.6s;
+    }
+  }
   .nav {
     width: 100%;
     background-color: #7ac3c5;

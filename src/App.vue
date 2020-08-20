@@ -1,20 +1,23 @@
 <template>
   <div id="app">
+    <Loading/>
     <SideMenu @update-show="updateShow" :msk_data="mask_zHTw" />
     <OpLayers
-      :flyshow="flyshow"
       v-if="mask_zHTw !== null"
       :msk_data="mask_zHTw"
       :tmpdata="tmp_data"
       @update-show="updateShow(type)"
     />
     <div class="clearfix"></div>
+    <CardDetail />
   </div>
 </template>
 
 <script>
 import SideMenu from "./components/SideMenu";
 import OpLayers from "./components/OpLayers";
+import CardDetail from "./components/CardDetail";
+import Loading from "./components/Loading";
 import axios from "axios";
 export default {
   name: "App",
@@ -28,6 +31,8 @@ export default {
   components: {
     SideMenu,
     OpLayers,
+    CardDetail,
+    Loading
   },
   created() {
     const vm = this;

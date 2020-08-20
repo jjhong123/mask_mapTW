@@ -60,9 +60,10 @@ export default {
   margin-right: 20px;
   padding: 25px;
   color: #b7b7b7;
-  @media (max-width:378px) {
+  @media (max-width: 378px) {
     width: 100%;
-    margin: unset;
+    margin-bottom: unset;
+    margin-right: unset;
   }
   .card {
     font-size: 1.6rem;

@@ -208,13 +208,16 @@ export default {
   color: white;
   z-index: 9999;
   width: 375px;
-  transition: all .6s;
+  transition: all 0.6s;
+  @media (max-width: 768px) {
+    width: 100%;
+  }
   &-avtive {
-    transform: translateX(-375px);
+    transform: translateX(-100%);
     .button {
       transform: translateX(52px);
       svg {
-        transform: rotate(90deg);
+        transform: rotate(0deg);
       }
     }
   }
@@ -235,6 +238,8 @@ export default {
     right: 0;
 
     svg {
+      transform: rotate(90deg);
+
       transition: 0.6s;
     }
   }

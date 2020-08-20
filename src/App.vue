@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Loading/>
+    <Loading :loading_type="loading_type" />
     <SideMenu @update-show="updateShow" :msk_data="mask_zHTw" />
     <OpLayers
       v-if="mask_zHTw !== null"
@@ -26,13 +26,14 @@ export default {
       mask_zHTw: null,
       flyshow: false,
       tmp_data: false,
+      loading_type: false,
     };
   },
   components: {
     SideMenu,
     OpLayers,
     CardDetail,
-    Loading
+    Loading,
   },
   created() {
     const vm = this;
@@ -41,12 +42,14 @@ export default {
   methods: {
     async getMaskData() {
       const vm = this;
+      vm.loading_type = true;
       const response = await axios.get(
         "https://raw.githubusercontent.com/kiang/pharmacies/master/json/points.json"
       );
       // 假資料
       // const response = await axios.get("http://localhost:3000/data");
       vm.mask_zHTw = await Object.freeze(response.data.features); //凍結對象,禁止對於屬性做修改
+      vm.loading_type = false;
     },
     updateShow(type, data) {
       const vm = this;

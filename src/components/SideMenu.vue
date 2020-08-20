@@ -189,11 +189,6 @@ export default {
     changMenu() {
       const vm = this;
       this.$refs.menu.classList.toggle("menu-avtive");
-      // if (result) {
-      //   this.$refs.menu.toggle("test");
-      // } else {
-      //   this.$refs.menu.toggle("test");
-      // }
     },
   },
 };

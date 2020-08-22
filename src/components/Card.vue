@@ -47,7 +47,7 @@ export default {
     margin-bottom: 20px;
     padding: 10px 15px;
     font-size: 1.6rem;
-    border: 3px solid #7ac3c5;
+    border: 3px solid #0BA29C;
     cursor: pointer;
     > div {
       margin-bottom: 10px;
@@ -60,7 +60,7 @@ export default {
 
       .mk-ad {
         width: 49%;
-        background: #88b5dd;
+        background: #0BA29C;
         border-radius: 0.25rem;
         padding: 5px 10px;
         .title {
@@ -72,7 +72,7 @@ export default {
       }
       .mk-ch {
         width: 49%;
-        background: #db8688;
+        background: #D4145A;
         border-radius: 0.25rem;
         padding: 5px 10px;
         .title {

@@ -1,19 +1,10 @@
 <template>
   <div id="map">
     <!-- 初始化地圖設定 -->
-    <l-map
-      ref="myMap"
-      :zoom="zoom"
-      :center="center"
-      :options="options"
-      style="height: 100vh;"
-    >
+    <l-map ref="myMap" :zoom="zoom" :center="center" :options="options" style="height: 100vh;">
       <!-- 載入圖資 -->
       <l-tile-layer :url="url" :attribution="attribution" />
       <!-- 加入組件 tag -->
-      <v-marker-cluster>
-        <l-geo-json :geojson="msk_data" :options="geoJsonOption"></l-geo-json>
-      </v-marker-cluster>
       <l-control-zoom position="topright"></l-control-zoom>
     </l-map>
   </div>
@@ -33,6 +24,7 @@ import "leaflet/dist/leaflet.css";
 
 // 設定預設 icon
 import { Icon } from "leaflet";
+
 delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -40,14 +32,8 @@ Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-// 載入 css
-import "leaflet.markercluster/dist/MarkerCluster.css";
-import "leaflet.markercluster/dist/MarkerCluster.Default.css";
-// 載入 markercluster 並啟用
-import Vue2LeafletMarkerCluster from "vue2-leaflet-markercluster";
-
 export default {
-  props: ["msk_data", "tmpdata"],
+  props: ["tmpdata"],
   name: "App",
   components: {
     LMap,
@@ -55,7 +41,6 @@ export default {
     LControl,
     LControlZoom,
     "l-geo-json": LGeoJson,
-    "v-marker-cluster": Vue2LeafletMarkerCluster,
   },
   data() {
     return {
@@ -66,45 +51,8 @@ export default {
       options: {
         zoomControl: false,
       },
-      geoJsonOption: {
-        pointToLayer: (geoJsonPoint, latlng) => {
-          let adult_cs = "";
-          let child_cs = "";
-
-          if (geoJsonPoint.properties.mask_adult === 0) {
-            adult_cs = "zero";
-          } else if (geoJsonPoint.properties.mask_adult < 100) {
-            adult_cs = "less";
-          } else {
-            adult_cs = "many";
-          }
-
-          if (geoJsonPoint.properties.mask_child === 0) {
-            child_cs = "zero";
-          } else if (geoJsonPoint.properties.mask_child < 100) {
-            child_cs = "less";
-          } else {
-            child_cs = "many";
-          }
-
-          const html = `
-            <div class="adult adult-${adult_cs}">${geoJsonPoint.properties.mask_adult}</div>
-            <div class="child child-${child_cs}">${geoJsonPoint.properties.mask_child}</div>
-          `;
-          // console.log(html)
-          // Add points icon
-          const options = {
-            icon: L.divIcon({
-              html: html,
-              className: "my_points",
-              iconSize: L.point(78, 36),
-              iconAnchor: L.point(39, 46),
-            }),
-          };
-
-          return L.marker(latlng, options).on("click", this.markerCilckHandler);
-        },
-      },
+      point_list: [],// 紀錄篩選後的資料(點)
+      openLayerPoint: [],// 紀錄在地圖畫上的點
     };
   },
   mounted() {
@@ -119,19 +67,83 @@ export default {
     });
   },
   methods: {
-    clickHandler() {
-      window.alert("and mischievous");
+    addMarkers() {
+      const map = this.$refs.myMap.mapObject;
+      const vm = this;
+      let adult_cs = "";
+      let child_cs = "";
+      let msk_type = null;
+      vm.clearAllMarker();
+      vm.point_list = vm.$store.getters.pointList.data;
+      vm.point_list.forEach((e) => {
+        if (e.properties.mask_adult === 0) {
+          adult_cs = "zero";
+        } else if (e.properties.mask_adult < 100) {
+          adult_cs = "less";
+        } else {
+          adult_cs = "many";
+        }
+        if (e.properties.mask_child === 0) {
+          child_cs = "zero";
+        } else if (e.properties.mask_child < 100) {
+          child_cs = "less";
+        } else {
+          child_cs = "many";
+        }
+        const html = `
+          <div class="op-popUp">
+            <div class="adult adult-${adult_cs}">${e.properties.mask_adult}</div>
+            <div class="child child-${child_cs}">${e.properties.mask_child}</div>
+          </div>
+          `;
+
+        if (e.properties.mask_adult === 0 && e.properties.mask_child === 0) {
+          msk_type = "msk-zero";
+        } else if (e.properties.mask_adult + e.properties.mask_child < 500) {
+          msk_type = "msk-less";
+        } else {
+          msk_type = "msk-many";
+        }
+
+        let myIcon = L.icon({
+          iconUrl: `/img/${msk_type}.svg`,
+          className: "my_points",
+          iconSize: L.point(78, 36),
+          iconAnchor: L.point(39, 46),
+          popupAnchor: [0, -50],
+        });
+        let latlng = {
+          lat: e.geometry.coordinates[1],
+          lng: e.geometry.coordinates[0],
+        };
+        vm.openLayerPoint.push(
+          L.marker(latlng, { icon: myIcon }).addTo(map).bindPopup(`${html}`)
+        );
+      });
+    },
+    clearAllMarker(data) {
+      const map = this.$refs.myMap.mapObject;
+      const vm = this;
+      console.log(vm.point_list);
+      if (vm.openLayerPoint.length > 0) {
+        vm.openLayerPoint.forEach((e, id) => {
+          map.removeLayer(e);
+        });
+        vm.point_list.length = 0;
+        vm.openLayerPoint.length = 0;
+      }
     },
     markerCilckHandler(e) {
       this.$bus.$emit("carddetail:message", e.target.feature);
-    }
+    },
   },
   watch: {
     tmpdata(item) {
       const map = this.$refs.myMap.mapObject;
+      // map.openPopup(item.geometry.coordinates[1], item.geometry.coordinates[0]);
       map.flyTo(
         [item.geometry.coordinates[1], item.geometry.coordinates[0]],
-        17
+        18
       );
     },
   },
@@ -142,11 +154,11 @@ export default {
 #map {
   width: 100%;
   height: 100vh;
-  // @media (max-width:767px){
-  // }
+  @media (max-width: 768px) {
+  }
 }
 
-.my_points {
+.op-popUp {
   border-radius: 5px;
   background: white;
   display: flex;

@@ -1,6 +1,6 @@
 <template>
   <div class="menu" ref="menu">
-    <button type="button" class="button" @click="changMenu()">
+    <button type="button" class="button btn-close" @click="changMenu()">
       <svg
         width="1em"
         height="1em"
@@ -59,13 +59,6 @@
           >{{item.name}}</option>
         </select>
       </div>
-    </div>
-    <div class="menu-label">
-      <ul class="menu__list">
-        <li class="menu__list__item menu__list__item--active">全部口罩</li>
-        <li class="menu__list__item">成人口罩</li>
-        <li class="menu__list__item">兒童口罩</li>
-      </ul>
     </div>
     <div class="menu-cards">
       <ul class="cards-list">
@@ -179,6 +172,14 @@ export default {
         }
         return false;
       });
+      vm.$store
+        .dispatch("changePointList", {
+          data: vm.ft_data,
+        })
+        .then(() => {
+          console.log('ok')
+          this.$emit("update-point");
+        });
     },
     // 左面板->list_click
     printDetailsClick(data) {
@@ -207,15 +208,11 @@ export default {
   @media (max-width: 768px) {
     width: 100%;
   }
+
   &-avtive {
     transform: translateX(-100%);
-    .button {
-      transform: translateX(52px);
-      svg {
-        transform: rotate(0deg);
-      }
-    }
   }
+
   .button {
     font-weight: 400;
     color: #212529;
@@ -231,11 +228,8 @@ export default {
     position: absolute;
     top: 0;
     right: 0;
-
-    svg {
-      transform: rotate(90deg);
-
-      transition: 0.6s;
+    :focus {
+      outline: none;
     }
   }
   .nav {
@@ -262,36 +256,14 @@ export default {
       font-weight: bold;
     }
   }
-  .menu-label {
-    .menu__list {
-      padding: 15px 15px;
-      background: #f7f7f7;
-      display: flex;
-      justify-content: space-around;
-      &__item {
-        width: 85px;
-        padding: 5px 5px;
-        border-radius: 10px;
-        cursor: pointer;
-        border: 1px solid #7ac3c5;
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: #7ac3c5;
-        text-align: center;
-        &--active {
-          background: #7ac3c5;
-          color: white;
-        }
-      }
-    }
-  }
+
   .menu-cards {
     background-color: #f7f7f7;
     padding: 0px 5px;
     color: #b3b3b3;
     width: 100%;
     font-size: 1.8rem;
-    height: calc(100% - 297px);
+    height: 100%;
     overflow: auto;
   }
 }

@@ -95,7 +95,7 @@ export default {
       }
       .child {
         width: 48%;
-        background: #db8688;
+        background: #D4145A;
         border-radius: 0.25rem;
         padding: 5px 10px;
         .title {

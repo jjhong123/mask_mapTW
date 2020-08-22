@@ -106,7 +106,7 @@ export default {
         }
 
         let myIcon = L.icon({
-          iconUrl: `/img/${msk_type}.svg`,
+          iconUrl: `https://jeffdemoweb.com/maskIMG/${msk_type}.svg`,
           className: "my_points",
           iconSize: L.point(78, 36),
           iconAnchor: L.point(39, 46),

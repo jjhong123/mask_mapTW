@@ -78,6 +78,7 @@ export default {
       let adult_cs = "";
       let child_cs = "";
       let msk_type = null;
+      this.$bus.$emit("carddetail:message", null);
       vm.clearAllMarker();
       vm.point_list = vm.$store.getters.pointList;
 

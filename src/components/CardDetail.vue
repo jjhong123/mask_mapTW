@@ -1,5 +1,24 @@
 <template>
   <div class="show_details" v-if="(template_data.properties!== undefined )? true:false">
+    <button type="button" class="button btn-close" @click="deletePanel()">
+      <svg
+        width="1em"
+        height="1em"
+        viewBox="0 0 16 16"
+        class="bi bi-x"
+        fill="currentColor"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"
+        />
+        <path
+          fill-rule="evenodd"
+          d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"
+        />
+      </svg>
+    </button>
     <div class="card">
       <div class="title">{{template_data.properties.name}}</div>
       <div class="address">地址：{{template_data.properties.address}}</div>
@@ -41,6 +60,12 @@ export default {
   beforeDestroy() {
     this.$bus.$off("carddetails:message");
   },
+  methods: {
+    deletePanel() {
+      const vm = this;
+      vm.template_data = Object.assign({}, null);
+    },
+  },
 };
 </script>
 
@@ -59,6 +84,27 @@ export default {
   margin-right: 20px;
   padding: 25px;
   color: #b7b7b7;
+
+  button {
+    font-weight: 400;
+    color: #212529;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: white;
+    border: 1px solid transparent;
+    padding: 10px 15px;
+    font-size: 2rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    position: absolute;
+    top: 0;
+    right: 0;
+    :focus {
+      outline: none;
+    }
+  }
+
   @media (max-width: 768px) {
     width: 100%;
     margin: unset;

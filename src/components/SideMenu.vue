@@ -24,13 +24,14 @@
         <img src="@/assets/img/doctor.svg" alt="doctor" />
         <div class="title" style="margin-bottom:10px;">
           <div class="title-1">貼心小提醒</div>
-          <div class="title-2">
+          <div class="title-2" v-if="day!=='all'">
             今天是身分證末一碼為
             [
-            <span v-if="day">1、3、5、7、9</span>
-            <span v-else>2、4、6、8、0</span>
-            ]的民眾才能購買口罩喔
+            <span v-if="day==='old'">1、3、5、7、9</span>
+            <span v-else-if="day==='even'">2、4、6、8、0</span>
+            ]的民眾才能購買口罩唷!
           </div>
+          <div class="title-2" v-else-if="day=='all'">今天都所有民眾都可以購買唷!</div>
         </div>
       </div>
 
@@ -106,12 +107,19 @@ export default {
   },
   created() {
     const vm = this;
-    vm.day = new Date();
-    vm.today.year = vm.day.getFullYear();
-    vm.today.month = vm.day.getMonth() + 1;
-    vm.today.day = vm.day.getDate();
-    vm.today.week = vm.day.getDay();
-    vm.day = vm.day % 2 !== 0 ? (vm.day = false) : (vm.day = true);
+    let day = new Date();
+    vm.today.year = day.getFullYear();
+    vm.today.month = day.getMonth() + 1;
+    vm.today.day = day.getDate();
+    vm.today.week = day.getDay();
+    // vm.day = vm.today.week % 2 === 0 ? "even" : "odd";
+    if (vm.today.week % 2 === 0 && vm.today.week !== 0) {
+      vm.day = "even";
+    } else if (vm.today.week % 2 !== 0 || vm.today.week !== 0) {
+      vm.day = "old";
+    } else {
+      vm.day = "all";
+    }
   },
   computed: {
     city_district() {
@@ -167,7 +175,7 @@ export default {
       vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
         this.$emit("update-point");
       });
-      
+
       // console.log(vm.ft_data);
     },
     // 城市->區域
@@ -291,7 +299,7 @@ export default {
   }
 
   .menu-cards {
-    padding:10px 5px;
+    padding: 10px 5px;
     color: #b3b3b3;
     width: 100%;
     font-size: 1.8rem;

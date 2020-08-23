@@ -36,7 +36,6 @@ export default {
     const vm = this;
     this.$bus.$on("carddetail:message", (msg) => {
       vm.template_data = Object.assign({}, msg);
-      console.log(vm.template_data);
     });
   },
   beforeDestroy() {
@@ -56,13 +55,14 @@ export default {
   z-index: 999;
   border-radius: 10px;
   border: 5px solid #7ac3c5;
-  margin-bottom: 20px;
+  margin-bottom: 66px;
   margin-right: 20px;
   padding: 25px;
   color: #b7b7b7;
   @media (max-width: 768px) {
     width: 100%;
     margin: unset;
+    margin-bottom: 66px;
   }
   .card {
     font-size: 1.6rem;
@@ -95,7 +95,7 @@ export default {
       }
       .child {
         width: 48%;
-        background: #D4145A;
+        background: #d4145a;
         border-radius: 0.25rem;
         padding: 5px 10px;
         .title {

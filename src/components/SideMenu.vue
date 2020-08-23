@@ -5,30 +5,35 @@
         width="1em"
         height="1em"
         viewBox="0 0 16 16"
-        class="bi bi-bar-chart-steps"
+        class="bi bi-x"
         fill="currentColor"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <path fill-rule="evenodd" d="M.5 0a.5.5 0 0 1 .5.5v15a.5.5 0 0 1-1 0V.5A.5.5 0 0 1 .5 0z" />
-        <rect width="5" height="2" x="2" y="1" rx=".5" />
-        <rect width="8" height="2" x="4" y="5" rx=".5" />
         <path
-          d="M6 9.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-6a.5.5 0 0 1-.5-.5v-1zm2 4a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-7a.5.5 0 0 1-.5-.5v-1z"
+          fill-rule="evenodd"
+          d="M11.854 4.146a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708-.708l7-7a.5.5 0 0 1 .708 0z"
+        />
+        <path
+          fill-rule="evenodd"
+          d="M4.146 4.146a.5.5 0 0 0 0 .708l7 7a.5.5 0 0 0 .708-.708l-7-7a.5.5 0 0 0-.708 0z"
         />
       </svg>
     </button>
     <div class="nav">
-      <div class="nav-header" style="margin-bottom:10px;">
-        {{today.year}}.{{today.month}}.{{today.day}}
-        {{get_chweek}}
+      <div class="nav-header">
+        <img src="@/assets/img/doctor.svg" alt="doctor" />
+        <div class="title" style="margin-bottom:10px;">
+          <div class="title-1">貼心小提醒</div>
+          <div class="title-2">
+            今天是身分證末一碼為
+            [
+            <span v-if="day">1、3、5、7、9</span>
+            <span v-else>2、4、6、8、0</span>
+            ]的民眾才能購買口罩喔
+          </div>
+        </div>
       </div>
-      <div class="nav-title" style="margin-bottom:10px;">
-        <span>
-          {{
-          (day===true)?'偶數':'奇數'
-          }}
-        </span>購買日
-      </div>
+
       <div class="nav-area">
         <select
           class="fm-ctl"
@@ -159,7 +164,10 @@ export default {
         }
         return false;
       });
-      console.log(vm.ft_data);
+       vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
+        this.$emit("update-point");
+      });
+      // console.log(vm.ft_data);
     },
     // 城市->區域
     getDataDistrict(item) {
@@ -172,14 +180,9 @@ export default {
         }
         return false;
       });
-      vm.$store
-        .dispatch("changePointList", {
-          data: vm.ft_data,
-        })
-        .then(() => {
-          console.log('ok')
-          this.$emit("update-point");
-        });
+      vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
+        this.$emit("update-point");
+      });
     },
     // 左面板->list_click
     printDetailsClick(data) {
@@ -202,9 +205,10 @@ export default {
   top: 0;
   left: 0;
   color: white;
-  z-index: 9999;
+  z-index: 1002;
   width: 375px;
   transition: all 0.6s;
+  background: white;
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -234,31 +238,57 @@ export default {
   }
   .nav {
     width: 100%;
-    background-color: #7ac3c5;
     font-size: 1.8rem;
-    padding: 15px 10px;
-    &-title {
-      span {
-        font-size: 5rem;
+    padding: 15px 16px;
+    &-header {
+      display: flex;
+      img {
+        width: 300px;
+        height: auto;
+      }
+      .title {
+        color: #00000080;
+        padding: 10px 10px;
+        &-1 {
+          font-size: 2.5rem;
+          color: #0ba29c;
+          line-height: 50px;
+        }
+        &-2 {
+          span {
+            font-size: 2.2rem;
+            color: #fbb03b;
+          }
+        }
       }
     }
+
     &-area {
-      width: 90%;
+      margin-top: 10px;
+      width: 100%;
+      display: inline-block;
     }
     .fm-ctl {
-      width: 100%;
+      width: 80%;
       padding: 15px 10px;
+      display: block;
+      margin: 0 auto;
+
       border-radius: 10px;
       cursor: pointer;
       border: transparent;
       color: #34495e;
       font-size: 1.8rem;
       font-weight: bold;
+      border: 1px solid #0ba29c;
+      &:focus {
+        border: 2px solid #0ba29c;
+        outline: none;
+      }
     }
   }
 
   .menu-cards {
-    background-color: #f7f7f7;
     padding: 0px 5px;
     color: #b3b3b3;
     width: 100%;

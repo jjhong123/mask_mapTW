@@ -19,13 +19,10 @@
     </button>
     <Loading :loading_type="loading_type" />
     <SideMenu @update-show="updateShow" :msk_data="mask_zHTw" @update-point="updatePointList" />
-    <OpLayers
-      ref="open_ly"
-      :tmpdata="tmp_data"
-      @update-show="updateShow(type)"
-    />
+    <OpLayers ref="open_ly" :tmpdata="tmp_data" @update-show="updateShow(type)" />
     <div class="clearfix"></div>
     <CardDetail />
+    <Footer v-if="mask_zHTw!==null" :mskupdate="update" />
   </div>
 </template>
 
@@ -34,6 +31,7 @@ import SideMenu from "./components/SideMenu";
 import OpLayers from "./components/OpLayers";
 import CardDetail from "./components/CardDetail";
 import Loading from "./components/Loading";
+import Footer from "./components/Footer";
 import axios from "axios";
 export default {
   name: "App",
@@ -44,6 +42,7 @@ export default {
       tmp_data: false,
       loading_type: false,
       point_list: null,
+      update: null,
     };
   },
   components: {
@@ -51,6 +50,7 @@ export default {
     OpLayers,
     CardDetail,
     Loading,
+    Footer,
   },
   created() {
     const vm = this;
@@ -68,6 +68,7 @@ export default {
       // const response = await axios.get("http://localhost:3000/data");
       vm.mask_zHTw = Object.freeze(response.data.features);
       vm.loading_type = false;
+      vm.update = vm.mask_zHTw[0].properties.updated;
     },
     updateShow(type, data) {
       const vm = this;

@@ -23,14 +23,14 @@ import {
 import "leaflet/dist/leaflet.css";
 
 // 設定預設 icon
-// import { Icon } from "leaflet";
+import { Icon } from "leaflet";
 
-// delete Icon.Default.prototype._getIconUrl;
-// Icon.Default.mergeOptions({
-//   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
-//   iconUrl: require("leaflet/dist/images/marker-icon.png"),
-//   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
-// });
+delete Icon.Default.prototype._getIconUrl;
+Icon.Default.mergeOptions({
+  iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+  iconUrl: require("leaflet/dist/images/marker-icon.png"),
+  shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+});
 
 export default {
   props: ["tmpdata"],
@@ -51,8 +51,8 @@ export default {
       options: {
         zoomControl: false,
       },
-      point_list: [],// 紀錄篩選後的資料(點)
-      openLayerPoint: [],// 紀錄在地圖畫上的點
+      point_list: [], // 紀錄篩選後的資料(點)
+      openLayerPoint: [], // 紀錄在地圖畫上的點
     };
   },
   mounted() {
@@ -74,7 +74,19 @@ export default {
       let child_cs = "";
       let msk_type = null;
       vm.clearAllMarker();
-      vm.point_list = vm.$store.getters.pointList.data;
+      vm.point_list = vm.$store.getters.pointList;
+      
+      //如果POINT不為空先飛過去
+      if (vm.point_list.length>0) {
+        map.flyTo(
+          [
+            vm.point_list[0].geometry.coordinates[1],
+            vm.point_list[0].geometry.coordinates[0],
+          ],
+          12
+        );
+      }
+
       vm.point_list.forEach((e) => {
         if (e.properties.mask_adult === 0) {
           adult_cs = "zero";
@@ -124,7 +136,6 @@ export default {
     clearAllMarker(data) {
       const map = this.$refs.myMap.mapObject;
       const vm = this;
-      console.log(vm.point_list);
       if (vm.openLayerPoint.length > 0) {
         vm.openLayerPoint.forEach((e, id) => {
           map.removeLayer(e);

@@ -1,5 +1,5 @@
 <template>
-  <li class="item" >
+  <li class="item">
     <div>
       {{data.properties.name}}
       <div class="clearfix"></div>
@@ -42,12 +42,16 @@ export default {
 
 <style lang="scss">
 .cards-list {
+  padding: 0px 10px;
   .item {
     background-color: white;
     margin-bottom: 20px;
     padding: 10px 15px;
     font-size: 1.6rem;
-    border: 3px solid #0BA29C;
+    // border: 3px solid #0BA29C;
+    border-radius: 2.25rem;
+    box-shadow:1px 1px 6px 4px #cccccc;
+    
     cursor: pointer;
     > div {
       margin-bottom: 10px;
@@ -60,8 +64,8 @@ export default {
 
       .mk-ad {
         width: 49%;
-        background: #0BA29C;
-        border-radius: 0.25rem;
+        background: #0ba29c;
+        border-radius:15px;
         padding: 5px 10px;
         .title {
           font-size: 4rem;
@@ -72,8 +76,8 @@ export default {
       }
       .mk-ch {
         width: 49%;
-        background: #D4145A;
-        border-radius: 0.25rem;
+        background: #d4145a;
+        border-radius:15px;
         padding: 5px 10px;
         .title {
           font-size: 4rem;

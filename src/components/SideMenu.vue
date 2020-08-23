@@ -164,7 +164,7 @@ export default {
         }
         return false;
       });
-       vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
+      vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
         this.$emit("update-point");
       });
       // console.log(vm.ft_data);
@@ -200,7 +200,7 @@ export default {
 
 <style lang="scss">
 .menu {
-  height: 100vh;
+  height: calc(100vh - 51px);
   position: absolute;
   top: 0;
   left: 0;
@@ -209,6 +209,7 @@ export default {
   width: 375px;
   transition: all 0.6s;
   background: white;
+  overflow: hidden;
   @media (max-width: 768px) {
     width: 100%;
   }
@@ -289,12 +290,15 @@ export default {
   }
 
   .menu-cards {
-    padding: 0px 5px;
+    padding:10px 5px;
     color: #b3b3b3;
     width: 100%;
     font-size: 1.8rem;
-    height: 100%;
+    height: 66%;
     overflow: auto;
+    @media (max-width: 768px) {
+      height: 60%;
+    }
   }
 }
 </style>

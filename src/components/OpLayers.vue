@@ -6,6 +6,11 @@
       <l-tile-layer :url="url" :attribution="attribution" />
       <!-- 加入組件 tag -->
       <l-control-zoom position="topright"></l-control-zoom>
+      <l-control position="topright">
+        <button class="locate" @click="clickHandler">
+          <img src="https://jeffdemoweb.com/maskIMG/btn_locate.svg" alt />
+        </button>
+      </l-control>
     </l-map>
   </div>
 </template>
@@ -75,9 +80,67 @@ export default {
       let msk_type = null;
       vm.clearAllMarker();
       vm.point_list = vm.$store.getters.pointList;
-      
+
+      L.geoJson(vm.point_list, {
+        pointToLayer: function (geoJsonPoint, latLng) {
+          if (geoJsonPoint.properties.mask_adult === 0) {
+            adult_cs = "zero";
+          } else if (geoJsonPoint.properties.mask_adult < 100) {
+            adult_cs = "less";
+          } else {
+            adult_cs = "many";
+          }
+          if (geoJsonPoint.properties.mask_child === 0) {
+            child_cs = "zero";
+          } else if (geoJsonPoint.properties.mask_child < 100) {
+            child_cs = "less";
+          } else {
+            child_cs = "many";
+          }
+          const html = `
+          <div class="op-popUp">
+            <div class="adult adult-${adult_cs}">${geoJsonPoint.properties.mask_adult}</div>
+            <div class="child child-${child_cs}">${geoJsonPoint.properties.mask_child}</div>
+          </div>
+          `;
+
+          if (
+            geoJsonPoint.properties.mask_adult === 0 &&
+            geoJsonPoint.properties.mask_child === 0
+          ) {
+            msk_type = "msk-zero";
+          } else if (
+            geoJsonPoint.properties.mask_adult +
+              geoJsonPoint.properties.mask_child <
+            500
+          ) {
+            msk_type = "msk-less";
+          } else {
+            msk_type = "msk-many";
+          }
+          let myIcon = L.icon({
+            iconUrl: `https://jeffdemoweb.com/maskIMG/${msk_type}.svg`,
+            className: "my_points",
+            iconSize: L.point(78, 36),
+            iconAnchor: L.point(39, 46),
+            popupAnchor: [0, -50],
+          });
+          let latlng = {
+            lat: geoJsonPoint.geometry.coordinates[1],
+            lng: geoJsonPoint.geometry.coordinates[0],
+          };
+
+          let marker = L.marker(latlng, { icon: myIcon })
+            .on("click", vm.markerCilckHandler)
+            .bindPopup(`${html}`);
+          vm.openLayerPoint.push(marker);
+          return marker;
+        },
+      }).addTo(map);
+      // Add time capability to the geojson layer
+
       //如果POINT不為空先飛過去
-      if (vm.point_list.length>0) {
+      if (vm.point_list.length > 0) {
         map.flyTo(
           [
             vm.point_list[0].geometry.coordinates[1],
@@ -86,52 +149,6 @@ export default {
           12
         );
       }
-
-      vm.point_list.forEach((e) => {
-        if (e.properties.mask_adult === 0) {
-          adult_cs = "zero";
-        } else if (e.properties.mask_adult < 100) {
-          adult_cs = "less";
-        } else {
-          adult_cs = "many";
-        }
-        if (e.properties.mask_child === 0) {
-          child_cs = "zero";
-        } else if (e.properties.mask_child < 100) {
-          child_cs = "less";
-        } else {
-          child_cs = "many";
-        }
-        const html = `
-          <div class="op-popUp">
-            <div class="adult adult-${adult_cs}">${e.properties.mask_adult}</div>
-            <div class="child child-${child_cs}">${e.properties.mask_child}</div>
-          </div>
-          `;
-
-        if (e.properties.mask_adult === 0 && e.properties.mask_child === 0) {
-          msk_type = "msk-zero";
-        } else if (e.properties.mask_adult + e.properties.mask_child < 500) {
-          msk_type = "msk-less";
-        } else {
-          msk_type = "msk-many";
-        }
-
-        let myIcon = L.icon({
-          iconUrl: `https://jeffdemoweb.com/maskIMG/${msk_type}.svg`,
-          className: "my_points",
-          iconSize: L.point(78, 36),
-          iconAnchor: L.point(39, 46),
-          popupAnchor: [0, -50],
-        });
-        let latlng = {
-          lat: e.geometry.coordinates[1],
-          lng: e.geometry.coordinates[0],
-        };
-        vm.openLayerPoint.push(
-          L.marker(latlng, { icon: myIcon }).addTo(map).bindPopup(`${html}`)
-        );
-      });
     },
     clearAllMarker(data) {
       const map = this.$refs.myMap.mapObject;
@@ -146,6 +163,15 @@ export default {
     },
     markerCilckHandler(e) {
       this.$bus.$emit("carddetail:message", e.target.feature);
+    },
+    clickHandler() {
+      console.log("here");
+      const map = this.$refs.myMap.mapObject;
+      // 獲得目前位置
+      navigator.geolocation.getCurrentPosition((position) => {
+        const p = position.coords;
+        map.flyTo([p.latitude, p.longitude], 12);
+      });
     },
   },
   watch: {
@@ -167,56 +193,65 @@ export default {
   height: 100vh;
   @media (max-width: 768px) {
   }
-}
+  .op-popUp {
+    border-radius: 5px;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    > div {
+      width: 32px;
+      height: 28px;
+      border-radius: 4px;
+      text-align: center;
+      line-height: 28px;
+    }
 
-.op-popUp {
-  border-radius: 5px;
-  background: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
-  > div {
-    width: 32px;
-    height: 28px;
-    border-radius: 4px;
-    text-align: center;
-    line-height: 28px;
+    .adult {
+      margin-right: 4px;
+      &-less {
+        background: #db8688;
+      }
+      &-many {
+        background: #88b5dd;
+      }
+      &-zero {
+        background: #b3b3b3;
+      }
+    }
+
+    .child {
+      &-less {
+        background: #db8688;
+      }
+      &-many {
+        background: #88b5dd;
+      }
+      &-zero {
+        background: #b3b3b3;
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -10px;
+      border: 10px solid transparent;
+      border-top: 10px solid #ffffff;
+    }
   }
-
-  .adult {
-    margin-right: 4px;
-    &-less {
-      background: #db8688;
+  .locate {
+    background: transparent;
+    border: 0;
+    img {
+      cursor: pointer;
     }
-    &-many {
-      background: #88b5dd;
+    &:focus {
+      outline: none;
     }
-    &-zero {
-      background: #b3b3b3;
-    }
-  }
-
-  .child {
-    &-less {
-      background: #db8688;
-    }
-    &-many {
-      background: #88b5dd;
-    }
-    &-zero {
-      background: #b3b3b3;
-    }
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -10px;
-    border: 10px solid transparent;
-    border-top: 10px solid #ffffff;
   }
 }
 </style>

@@ -96,6 +96,7 @@ export default {
 #app {
   width: 100%;
   height: 100%;
+  position: relative;
   .btn-open {
     font-weight: 400;
     color: #212529;

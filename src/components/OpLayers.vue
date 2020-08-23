@@ -7,7 +7,7 @@
       <!-- 加入組件 tag -->
       <l-control-zoom position="topright"></l-control-zoom>
       <l-control position="topright">
-        <button class="locate" @click="clickHandler">
+        <button class="locate" @click="clickHandler()">
           <img src="https://jeffdemoweb.com/maskIMG/btn_locate.svg" alt />
         </button>
       </l-control>
@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       zoom: 13,
-      center: [22.612961, 120.304167],
+      center: [	25.105497, 121.597366],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: `© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`,
       options: {
@@ -166,18 +166,16 @@ export default {
       this.$bus.$emit("carddetail:message", e.target.feature);
     },
     clickHandler() {
-      console.log("here");
       const map = this.$refs.myMap.mapObject;
+      const vm = this;
       // 獲得目前位置
-      navigator.geolocation.getCurrentPosition((position) => {
-        const p = position.coords;
-        map.flyTo([p.latitude, p.longitude], 12);
-      });
+      map.flyTo([vm.center[0], vm.center[1]], 12);
     },
   },
   watch: {
     tmpdata(item) {
       const map = this.$refs.myMap.mapObject;
+
       // map.openPopup(item.geometry.coordinates[1], item.geometry.coordinates[0]);
       map.flyTo(
         [item.geometry.coordinates[1], item.geometry.coordinates[0]],
@@ -191,7 +189,10 @@ export default {
 <style lang="scss">
 #map {
   width: 100%;
-  height: 100vh;
+  height: 100%;
+  .vue2leaflet-map {
+    height: 100% !important;
+  }
   @media (max-width: 768px) {
   }
   .op-popUp {

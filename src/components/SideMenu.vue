@@ -200,7 +200,7 @@ export default {
 
 <style lang="scss">
 .menu {
-  height: calc(100vh - 51px);
+  height: calc(100% - 70px);
   position: absolute;
   top: 0;
   left: 0;
@@ -209,7 +209,6 @@ export default {
   width: 375px;
   transition: all 0.6s;
   background: white;
-  overflow: hidden;
   @media (max-width: 768px) {
     width: 100%;
   }

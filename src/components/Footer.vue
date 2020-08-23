@@ -19,6 +19,7 @@ export default {
   color: white;
   position: absolute;
   bottom: 0;
+  left: 0;
   background: #0ba29c;
   padding: 15px 20px;
   font-size: 2rem;

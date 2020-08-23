@@ -167,6 +167,7 @@ export default {
       vm.$store.dispatch("changePointList", vm.ft_data).then(() => {
         this.$emit("update-point");
       });
+      
       // console.log(vm.ft_data);
     },
     // 城市->區域
@@ -200,7 +201,7 @@ export default {
 
 <style lang="scss">
 .menu {
-  height: calc(100% - 70px);
+  height: calc(100% - 50px);
   position: absolute;
   top: 0;
   left: 0;
@@ -211,6 +212,7 @@ export default {
   background: white;
   @media (max-width: 768px) {
     width: 100%;
+    height: calc(100% - 67px);
   }
 
   &-avtive {

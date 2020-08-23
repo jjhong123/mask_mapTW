@@ -189,11 +189,12 @@ export default {
 <style lang="scss">
 #map {
   width: 100%;
-  height: 100%;
+  height: calc(100% - 50px);
   .vue2leaflet-map {
     height: 100% !important;
   }
   @media (max-width: 768px) {
+    height: calc(100% - 67px);
   }
   .op-popUp {
     border-radius: 5px;

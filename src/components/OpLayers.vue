@@ -8,7 +8,7 @@
       <l-control-zoom position="topright"></l-control-zoom>
       <l-control position="topright">
         <button class="locate" @click="clickHandler()">
-          <img src="https://jeffdemoweb.com/maskIMG/btn_locate.svg" alt />
+          <img src="@/assets/img/btn_locate.svg" alt />
         </button>
       </l-control>
     </l-map>
@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       zoom: 13,
-      center: [	25.105497, 121.597366],
+      center: [25.105497, 121.597366],
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       attribution: `© <a href="http://osm.org/copyright">OpenStreetMap</a> contributors`,
       options: {
@@ -75,8 +75,8 @@ export default {
     addMarkers() {
       const map = this.$refs.myMap.mapObject;
       const vm = this;
-      let adult_cs = "";
-      let child_cs = "";
+      let adult_cs = null;
+      let child_cs = null;
       let msk_type = null;
       this.$bus.$emit("carddetail:message", null);
       vm.clearAllMarker();
@@ -84,20 +84,18 @@ export default {
 
       L.geoJson(vm.point_list, {
         pointToLayer: function (geoJsonPoint, latLng) {
+          console.log(geoJsonPoint.properties)
           if (geoJsonPoint.properties.mask_adult === 0) {
             adult_cs = "zero";
-          } else if (geoJsonPoint.properties.mask_adult < 100) {
-            adult_cs = "less";
-          } else {
-            adult_cs = "many";
+          }else{
+            adult_cs = "";
           }
           if (geoJsonPoint.properties.mask_child === 0) {
             child_cs = "zero";
-          } else if (geoJsonPoint.properties.mask_child < 100) {
-            child_cs = "less";
-          } else {
-            child_cs = "many";
+          }else{
+            child_cs = "";
           }
+          console.log(`${geoJsonPoint.properties.name}: ${geoJsonPoint.properties.mask_adult} ${geoJsonPoint.properties.mask_child}`)
           const html = `
           <div class="op-popUp">
             <div class="adult adult-${adult_cs}">${geoJsonPoint.properties.mask_adult}</div>
@@ -105,22 +103,9 @@ export default {
           </div>
           `;
 
-          if (
-            geoJsonPoint.properties.mask_adult === 0 &&
-            geoJsonPoint.properties.mask_child === 0
-          ) {
-            msk_type = "msk-zero";
-          } else if (
-            geoJsonPoint.properties.mask_adult +
-              geoJsonPoint.properties.mask_child <
-            500
-          ) {
-            msk_type = "msk-less";
-          } else {
-            msk_type = "msk-many";
-          }
           let myIcon = L.icon({
-            iconUrl: `https://jeffdemoweb.com/maskIMG/${msk_type}.svg`,
+            // iconUrl: `https://jeffdemoweb.com/maskIMG/${msk_type}.svg`,
+            iconUrl: "img/msk-many.svg",
             className: "my_points",
             iconSize: L.point(78, 36),
             iconAnchor: L.point(39, 46),
@@ -213,24 +198,14 @@ export default {
 
     .adult {
       margin-right: 4px;
-      &-less {
-        background: #db8688;
-      }
-      &-many {
-        background: #88b5dd;
-      }
+      background: #0ba29c;
       &-zero {
         background: #b3b3b3;
       }
     }
 
     .child {
-      &-less {
-        background: #db8688;
-      }
-      &-many {
-        background: #88b5dd;
-      }
+      background: #d4145a;
       &-zero {
         background: #b3b3b3;
       }

@@ -128,7 +128,7 @@ export default {
       color: white;
       .adult {
         width: 48%;
-        background: #88b5dd;
+        background: #0ba29c;
         border-radius: 0.25rem;
         padding: 5px 10px;
         margin-right: calc(100% - 96%);

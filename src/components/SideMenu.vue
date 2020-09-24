@@ -235,10 +235,11 @@ export default {
     user-select: none;
     background-color: white;
     border: 1px solid transparent;
-    padding: 10px 15px;
-    font-size: 2rem;
+    padding: 10px;
+    font-size: 2.5rem;
     line-height: 1.5;
     border-radius: 0.25rem;
+    
     position: absolute;
     top: 0;
     right: 0;
